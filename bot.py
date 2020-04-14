@@ -14,7 +14,6 @@ from threading import Thread
 from vebinar import *
 from parser import *
 
-
 bot = telebot.TeleBot(cfg.token)
 
 main_button = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -265,12 +264,17 @@ def send_anytext(message):
     chat_id = message.chat.id
     if message.text == 'Ситуация короновируса':
         bot.send_message(chat_id, 'Вы выбрали раздел о ситуации короновируса', reply_markup=temporary_button)
-        while True:
-            time.sleep(28800)
-            bot.send_message(chat_id, f'Ситуация короновируса в Кыргызстане\nВыявлено всего: {total} '
-                                      f'\nВыявлено за сутки: {today}\nИзлечились: {cured}\nУмерло: {died_kg}'
-                                      f'\n\nСитуация короновируса в мире\nВыявлено всего: {total_world} '
-                                      f'\nУмерло: {died_world}')
+
+        def pars():
+            while True:
+                time.sleep(28800)
+                bot.send_message(chat_id, f'Ситуация короновируса в Кыргызстане\nВыявлено всего: {total} '
+                                          f'\nВыявлено за сутки: {today}\nИзлечились: {cured}\nУмерло: {died_kg}'
+                                          f'\n\nСитуация короновируса в мире\nВыявлено всего: {total_world} '
+                                          f'\nУмерло: {died_world}')
+
+        if __name__ == '__main__':
+            Thread(target=pars).start()
 
     if message.text == 'Ситуация короновируса в Кыргызстане':
         bot.send_message(chat_id, 'Выявлено всего: {} \nВыявлено за сутки: {}\nИзлечились: {}\nУмерло: {}'.format(total,
@@ -286,10 +290,13 @@ def send_anytext(message):
 
     if message.text == 'Новости':
         bot.send_message(chat_id, 'Вы выбрали раздел новостей', reply_markup=news_buttons)
-        while True:
-            time.sleep(300)
-            if len(news_not) != len(news_1_main):
-                bot.send_message(chat_id, news_last)
+        def pars_2():
+            while True:
+                time.sleep(300)
+                if len(news_not) != len(news_1_main):
+                    bot.send_message(chat_id, news_last)
+        if __name__ == '__main__':
+            Thread(target=pars_2).start()
     if message.text == 'Самые популярные новости':
         bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_1_main, link_1_main))
         bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_2_main, link_2_main))
