@@ -13,8 +13,7 @@ import time
 from threading import Thread
 from vebinar import *
 from parser import *
-from not_covid_kg import *
-from not_covid_world import *
+
 
 bot = telebot.TeleBot(cfg.token)
 
@@ -272,6 +271,7 @@ def send_anytext(message):
                                       f'\nВыявлено за сутки: {today}\nИзлечились: {cured}\nУмерло: {died_kg}'
                                       f'\n\nСитуация короновируса в мире\nВыявлено всего: {total_world} '
                                       f'\nУмерло: {died_world}')
+
     if message.text == 'Ситуация короновируса в Кыргызстане':
         bot.send_message(chat_id, 'Выявлено всего: {} \nВыявлено за сутки: {}\nИзлечились: {}\nУмерло: {}'.format(total,
                                                                                                                   today,
@@ -287,10 +287,9 @@ def send_anytext(message):
     if message.text == 'Новости':
         bot.send_message(chat_id, 'Вы выбрали раздел новостей', reply_markup=news_buttons)
         while True:
-            time.sleep(10)
+            time.sleep(300)
             if len(news_not) != len(news_1_main):
                 bot.send_message(chat_id, news_last)
-
     if message.text == 'Самые популярные новости':
         bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_1_main, link_1_main))
         bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_2_main, link_2_main))
