@@ -66,6 +66,11 @@ reg = types.InlineKeyboardButton(text='Рагистрация на данный 
 inline_keyboard.add(reg)
 
 user_dict = {}
+users = []
+new = ''
+new_sending = ''
+new_covid_world = ''
+new_covid_kg = ''
 
 
 class User:
@@ -190,7 +195,8 @@ def getRegData(user, title, name):
 @bot.message_handler(commands=["registration"])
 def user_reg_study(message):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    title = types.KeyboardButton(veb_title)
+    html_veb = get_html('http://santo-pharm.kg/news')
+    title = types.KeyboardButton(vebinar_title(html_veb))
     keyboard.add(title)
 
     msg = bot.send_message(message.chat.id, 'Нажмите на кнопку для выбора названия курса', reply_markup=keyboard)
@@ -261,28 +267,33 @@ def getRegDataStudy(user_study, title, name):
 
 @bot.message_handler(content_types=["text"])
 def send_anytext(message):
+    global new, new_sending, new_covid_world, new_covid_kg
     chat_id = message.chat.id
     if message.text == 'Ситуация короновируса':
         bot.send_message(chat_id, 'Вы выбрали раздел о ситуации короновируса', reply_markup=temporary_button)
 
-        def pars():
+        def covid():
             while True:
-                time.sleep(28800)
-                bot.send_message(chat_id, f'Ситуация короновируса в Кыргызстане\nВыявлено всего: {total} '
-                                          f'\nВыявлено за сутки: {today}\nИзлечились: {cured}\nУмерло: {died_kg}'
-                                          f'\n\nСитуация короновируса в мире\nВыявлено всего: {total_world} '
-                                          f'\nУмерло: {died_world}')
+                time.sleep(108100)
+                with open('users.txt', 'r') as file:
+                    for line in file:
+                        html_c_w = get_html('https://www.bbc.com/russian/news-51706538')
+                        html_c_k = get_html('https://kaktus.media/')
+                        if new_covid_world != get_total_world(html_c_w) or new_covid_kg != get_total(html_c_k):
+                            bot.send_message(line, f'<b>Ситуация короновируса в мире</b>\n\n{get_total_world(html_c_w)}\n\n'
+                                                   f'<b>Ситуация короновируса в Кыргызстане</b>\n\n{get_total(html_c_k)}',
+                                             parse_mode='HTML')
+                            new_covid_world = get_total_world(html_c_w)
+                            new_covid_kg = get_total(html_c_k)
 
         if __name__ == '__main__':
-            Thread(target=pars).start()
-
+            Thread(target=covid).start()
     if message.text == 'Ситуация короновируса в Кыргызстане':
-        bot.send_message(chat_id, 'Выявлено всего: {} \nВыявлено за сутки: {}\nИзлечились: {}\nУмерло: {}'.format(total,
-                                                                                                                  today,
-                                                                                                                  cured,
-                                                                                                                  died_kg))
+        html_c_k = get_html('https://kaktus.media/')
+        bot.send_message(chat_id, get_total(html_c_k), parse_mode='HTML')
     if message.text == 'Ситуация короновируса в мире':
-        bot.send_message(chat_id, 'Выявлено всего: {}\nУмерли: {}'.format(total_world, died_world))
+        html_c_w = get_html('https://www.bbc.com/russian/news-51706538')
+        bot.send_message(chat_id, get_total_world(html_c_w), parse_mode='HTML')
     if message.text == 'Назад в меню':
         bot.send_message(chat_id, 'Вы в главном меню', reply_markup=main_button)
 
@@ -290,31 +301,47 @@ def send_anytext(message):
 
     if message.text == 'Новости':
         bot.send_message(chat_id, 'Вы выбрали раздел новостей', reply_markup=news_buttons)
+
         def pars_2():
+            global new
+            if chat_id not in users:
+                with open('users.txt', 'a+') as f:
+                    f.write(str(chat_id) + '\n')
             while True:
                 time.sleep(300)
-                if len(news_not) != len(news_1_main):
-                    bot.send_message(chat_id, news_last)
+                with open('users.txt', 'r') as file:
+                    for line in file:
+                        print(line)
+                        html = get_html('https://kaktus.media/')
+                        if new != get_data(html):
+                            bot.send_message(line, get_data(html))
+                            new = get_data(html)
+
         if __name__ == '__main__':
             Thread(target=pars_2).start()
+
     if message.text == 'Самые популярные новости':
-        bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_1_main, link_1_main))
-        bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_2_main, link_2_main))
-        bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_3_main, link_3_main))
-        bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_4_main, link_4_main))
-        bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_6_main, link_6_main))
+        html_p_n = get_html('https://kaktus.media/')
+        bot.send_message(chat_id, get_1_news(html_p_n))
+        bot.send_message(chat_id, get_2_news(html_p_n))
+        bot.send_message(chat_id, get_3_news(html_p_n))
+        bot.send_message(chat_id, get_4_news(html_p_n))
+        bot.send_message(chat_id, get_5_news(html_p_n))
+        bot.send_message(chat_id, get_6_news(html_p_n))
     if message.text == 'Все новости':
-        bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_1, link_1))
-        bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_2, link_2))
-        bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_3, link_3))
-        bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_4, link_4))
-        bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_5, link_5), reply_markup=next_news_buttons)
+        html_a_n = get_html('https://kaktus.media/')
+        bot.send_message(chat_id, get_1_news(html_a_n))
+        bot.send_message(chat_id, get_2_news(html_a_n))
+        bot.send_message(chat_id, get_3_news(html_a_n))
+        bot.send_message(chat_id, get_4_news(html_a_n))
+        bot.send_message(chat_id, get_5_news(html_a_n), reply_markup=next_news_buttons)
     if message.text == 'Еще новости':
-        bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_6, link_6))
-        bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_7, link_7))
-        bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_8, link_8))
-        bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_9, link_9))
-        bot.send_message(chat_id, '{}\nЧитать по ссылке:\n{}'.format(news_10, link_10), reply_markup=back_button)
+        html_a_n = get_html('https://kaktus.media/')
+        bot.send_message(chat_id, get_6_news(html_a_n))
+        bot.send_message(chat_id, get_7_news(html_a_n))
+        bot.send_message(chat_id, get_8_news(html_a_n))
+        bot.send_message(chat_id, get_9_news(html_a_n))
+        bot.send_message(chat_id, get_10_news(html_a_n), reply_markup=back_button)
     if message.text == 'Назад':
         bot.send_message(chat_id, 'Вы в разделе новостей', reply_markup=news_buttons)
 
@@ -327,56 +354,37 @@ def send_anytext(message):
     #####################################################Study####################################################
 
     if message.text == 'Обучение':
-        # def pars_veb():
-        #     def get_html(url):
-        #         result = requests.get(url)
-        #         return result.text
-        #
-        #     html = get_html('http://santo-pharm.kg/news')
-        #     while True:
-        #         def veb1(html):
-        #             time.sleep(172900)
-        #             soup = BeautifulSoup(html, 'lxml')
-        #             try:
-        #                 title = soup.find('div',
-        #                                   class_='last-news__right').find('div',
-        #                                                                   class_='news__right-item').find(
-        #                     'h2').text.strip()
-        #                 return len(title)
-        #             except:
-        #                 title = ''
-        #
-        #         def veb2(html):
-        #             time.sleep(173000)
-        #             soup = BeautifulSoup(html, 'lxml')
-        #             try:
-        #                 title = soup.find('div',
-        #                                   class_='last-news__right').find('div',
-        #                                                                   class_='news__right-item').find(
-        #                     'h2').text.strip()
-        #                 return len(title)
-        #             except:
-        #                 title = ''
-        #
-        #         v1 = veb1(html)
-        #         v2 = veb2(html)
-        #         print('a: {}'.format(v1))
-        #         if v1 == v2:
-        #             pass
-        #         else:
-        #             bot.send_message(message.chat.id, 'В разделе "Обучение" появился новый вебинар')
-        #
-        #
-        # if __name__ == '__main__':
-        #     Thread(target=pars_veb).start()
-
-        bot.send_message(chat_id, '{} \n{}\n{}'.format(veb_title, veb_text, veb_link), reply_markup=inline_keyboard)
+        html_veb = get_html('http://santo-pharm.kg/news')
+        bot.send_message(chat_id, '{} \n{}\n{}'.format(vebinar_title(html_veb), vebinar_text(html_veb),
+                                                       vebinar_link(html_veb)),
+                         reply_markup=inline_keyboard)
 
     #####################################################Sending######################################################
 
     if message.text == 'Рассылка':
-        bot.send_message(chat_id, 'Вы выбрали раздел рассылки.\n\n{}\n{}\n{}'.format(veb_title, veb_text, veb_link),
-                         reply_markup=sending_buttons)
+        html_veb = get_html('http://santo-pharm.kg/news')
+        bot.send_message(chat_id, 'Вы выбрали раздел рассылки.\n\n{}\n{}\n{}'.format(vebinar_title(html_veb),
+                                                                                      vebinar_text(html_veb),
+                                                                                      vebinar_link(html_veb),
+                                                                                     reply_markup=sending_buttons))
+
+        def sending_veb():
+            global new_sending
+            while True:
+                time.sleep(259300)
+                with open('users.txt', 'r') as f_opened:
+                    for x in f_opened:
+                        html_veb = get_html('http://santo-pharm.kg/news')
+                        print(x)
+                        if new_sending != vebinar_title(html_veb):
+                            bot.send_message(x, 'Новый вебинар:\n\n{}\n{}\n{}'.format(vebinar_title(html_veb),
+                                                                                      vebinar_text(html_veb),
+                                                                                      vebinar_link(html_veb)))
+                            new_sending = vebinar_title(html_veb)
+
+        if __name__ == '__main__':
+            Thread(target=sending_veb).start()
+
     if message.text == 'Информация о товарах':
         bot.send_message(chat_id, 'Информация о товарах')
 
