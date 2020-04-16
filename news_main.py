@@ -13,7 +13,7 @@ def get_html(url):
 # html = get_html('https://kaktus.media/')
 
 # ########################################### 1 ##########################################################################
-def get_news_1(html):
+def get_news_1_p(html):
     try:
         soup = BeautifulSoup(html, 'lxml')
         ul = soup.find('ul', {'class': 'topic_list view_lenta 1'})
@@ -29,7 +29,7 @@ def get_news_1(html):
 
 #################################################### 2 ################################################################
 
-def get_news_2(html):
+def get_news_2_p(html):
     try:
         soup = BeautifulSoup(html, 'lxml')
         ul = soup.find('ul', {'class': 'topic_list view_lenta 1'})
@@ -45,7 +45,7 @@ def get_news_2(html):
 
 ################################################ 3 ##################################################################
 
-def get_news_3(html):
+def get_news_3_p(html):
     try:
         soup = BeautifulSoup(html, 'lxml')
         ul = soup.find('ul', {'class': 'topic_list view_lenta 1'})
@@ -61,7 +61,7 @@ def get_news_3(html):
 
 #################################################### 4 ###############################################################
 
-def get_news_4(html):
+def get_news_4_p(html):
     try:
         soup = BeautifulSoup(html, 'lxml')
         ul = soup.find('ul', {'class': 'topic_list view_lenta 1'})
@@ -77,7 +77,7 @@ def get_news_4(html):
 
 ################################################## 5 ###############################################################
 
-def get_news_5(html):
+def get_news_5_p(html):
     try:
         soup = BeautifulSoup(html, 'lxml')
         ul = soup.find('ul', {'class': 'topic_list view_lenta 1'})
@@ -93,7 +93,7 @@ def get_news_5(html):
 
 ##################################################6##########################################################
 
-def get_news_6(html):
+def get_news_6_p(html):
     try:
         soup = BeautifulSoup(html, 'lxml')
         ul = soup.find('ul', {'class': 'topic_list view_lenta 1'})
@@ -107,15 +107,5 @@ def get_news_6(html):
         span = ''
 
 
-# get_news_1(html)
-#
-# get_news_2(html)
-#
-# get_news_3(html)
-#
-# get_news_4(html)
-#
-# get_news_5(html)
-#
-# get_news_6(html)
+
 

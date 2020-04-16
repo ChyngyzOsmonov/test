@@ -274,7 +274,7 @@ def send_anytext(message):
 
         def covid():
             while True:
-                time.sleep(108100)
+                time.sleep(600)
                 with open('users.txt', 'r') as file:
                     for line in file:
                         html_c_w = get_html('https://www.bbc.com/russian/news-51706538')
@@ -322,12 +322,12 @@ def send_anytext(message):
 
     if message.text == 'Самые популярные новости':
         html_p_n = get_html('https://kaktus.media/')
-        bot.send_message(chat_id, get_1_news(html_p_n))
-        bot.send_message(chat_id, get_2_news(html_p_n))
-        bot.send_message(chat_id, get_3_news(html_p_n))
-        bot.send_message(chat_id, get_4_news(html_p_n))
-        bot.send_message(chat_id, get_5_news(html_p_n))
-        bot.send_message(chat_id, get_6_news(html_p_n))
+        bot.send_message(chat_id, get_news_1_p(html_p_n))
+        bot.send_message(chat_id, get_news_2_p(html_p_n))
+        bot.send_message(chat_id, get_news_3_p(html_p_n))
+        bot.send_message(chat_id, get_news_4_p(html_p_n))
+        bot.send_message(chat_id, get_news_5_p(html_p_n))
+        bot.send_message(chat_id, get_news_6_p(html_p_n))
     if message.text == 'Все новости':
         html_a_n = get_html('https://kaktus.media/')
         bot.send_message(chat_id, get_1_news(html_a_n))
